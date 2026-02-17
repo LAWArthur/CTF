@@ -1,0 +1,16 @@
+[workspace]
+channels = ["conda-forge"]
+name = "ctf"
+platforms = ["win-64"]
+version = "0.1.0"
+
+[tasks]
+
+[dependencies]
+python = "==3.10"
+requests = ">=2.32.5,<3"
+tqdm = ">=4.67.3,<5"
+ds_store = ">=1.3.2,<2"
+
+[pypi-dependencies]
+githacker = ">=1.1.7, <2"
