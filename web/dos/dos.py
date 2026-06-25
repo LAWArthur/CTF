@@ -248,16 +248,17 @@ def main():
                 print(f"持续时间 {args.duration}s 已达到，停止。")
                 break
 
-            # 如果存活线程数 < 目标数，补到目标数
-            alive = 0  # 粗略计数，不精确追踪每个线程
             for _ in range(args.threads):
-                t = threading.Thread(
-                    target=strategy_fn,
-                    args=(host, port, use_ssl, args.timeout, stop_event, args.verbose),
-                    daemon=True,
-                )
-                t.start()
-                count += 1
+                try:
+                    t = threading.Thread(
+                        target=strategy_fn,
+                        args=(host, port, use_ssl, args.timeout, stop_event, args.verbose),
+                        daemon=True,
+                    )
+                    t.start()
+                    count += 1
+                except RuntimeError:
+                    break
 
             if not args.verbose and count % (args.threads * 10) == 0:
                 print(f"已创建 {count} 次连接...")
