@@ -249,7 +249,7 @@ class AttackScheduler:
                     with self.lock:
                         self.connections.append(t)
 
-            time.sleep(1)
+            time.sleep(0.01)
 
             if self.verbose:
                 with self.lock:
