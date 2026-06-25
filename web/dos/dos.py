@@ -239,15 +239,13 @@ class AttackScheduler:
                 for _ in range(batch):
                     if self.stop_event.is_set():
                         break
-                    with self.lock:
-                        cid = self.conn_counter
-                        self.conn_counter += 1
+                    cid = self.conn_counter
+                    self.conn_counter += 1
                     t = threading.Thread(
                         target=self._worker, args=(cid,), daemon=True,
                     )
                     t.start()
-                    with self.lock:
-                        self.connections.append(t)
+                    self.connections.append(t)
 
             time.sleep(0.01)
 
