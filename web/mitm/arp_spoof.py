@@ -57,7 +57,7 @@ def main():
 
     filter = MITMFilter(args.ip_a, args.ip_b, mac_a, mac_b, mac_host)
     forwarder = Forwarder(iface=args.iface)
-    wire = ConsoleSink()
+    wire = WiresharkSink()
     source > filter
     filter > forwarder
     filter > wire
