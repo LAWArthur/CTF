@@ -18,8 +18,8 @@ class MITMFilter(Drain):
         self.mac_b = mac_b
         self.mac_host = mac_host
     def push(self, msg):
-        if not msg.haslayer(Ether) or msg[Ether].src == self.mac_host:
-            return # ignore packets from the host itself
+        if not msg.haslayer(Ether) or msg[Ether].dst != self.mac_host:
+            return # ignore outgoing packets
         print(f"MITMFilter: {msg.show()}")
         if msg.haslayer(IP):
             if msg[IP].src == self.ip_a and msg[IP].dst == self.ip_b:
@@ -45,7 +45,7 @@ def main():
     parser.add_argument("--iface", help="Network interface to use", default=conf.iface)
     args = parser.parse_args()
 
-    source = SniffSource(iface=args.iface)
+    source = SniffSource(iface=args.iface, filter="inbound")
     mac_a = get_true_mac(args.ip_a)
     mac_b = get_true_mac(args.ip_b)
     mac_host = conf.ifaces[args.iface].mac
