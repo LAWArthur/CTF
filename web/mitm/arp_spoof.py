@@ -48,7 +48,7 @@ def main():
     source = SniffSource(iface=args.iface)
     mac_a = get_true_mac(args.ip_a)
     mac_b = get_true_mac(args.ip_b)
-    mac_host = conf.ifaces[args.iface].hwaddr
+    mac_host = conf.ifaces[args.iface].mac
 
     print(f"MAC address of {args.ip_a}: {mac_a}")
     print(f"MAC address of {args.ip_b}: {mac_b}")
