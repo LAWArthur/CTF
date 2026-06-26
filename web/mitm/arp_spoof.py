@@ -48,11 +48,12 @@ def main():
     source = SniffSource(iface=args.iface)
     mac_a = get_true_mac(args.ip_a)
     mac_b = get_true_mac(args.ip_b)
+    mac_host = conf.ifaces[args.iface].hwaddr
 
     print(f"MAC address of {args.ip_a}: {mac_a}")
     print(f"MAC address of {args.ip_b}: {mac_b}")
 
-    filter = MITMFilter(args.ip_a, args.ip_b, mac_a, mac_b)
+    filter = MITMFilter(args.ip_a, args.ip_b, mac_a, mac_b, mac_host)
     forwarder = Forwarder(iface=args.iface)
     wire = WiresharkSink()
     source > filter
